@@ -1,6 +1,6 @@
 import os
 
-
+#tensorflow and easy ocr
 #defining models
 
 CUSTOM_MODEL_NAME = 'my_ssd_mobnet' 
@@ -57,7 +57,8 @@ if not os.path.exists(os.path.join(paths['APIMODEL_PATH'], 'research', 'object_d
     os.system(f"git clone https://github.com/tensorflow/models {paths['APIMODEL_PATH']}")
 
 
-#install tensorflow object detection
+#install tensorflow pretrained object detection
+#the protobuf compiler compiles tensorflow source code into a model we can use.
 
 if os.name=='posix':  
     os.system("sudo apt-get -y install protobuf-compiler")
@@ -72,3 +73,25 @@ if os.name=='nt':
     os.system(f"cd Tensorflow/models/research && protoc object_detection/protos/*.proto --python_out=. && copy object_detection\\packages\\tf2\\setup.py setup.py && python setup.py build && python setup.py install")
     os.system(f"cd Tensorflow/models/research/slim && pip install -e .")
 
+VERIFICATION_SCRIPT = os.path.join(paths['APIMODEL_PATH'], 'research', 'object_detection', 'builders', 'model_builder_tf2_test.py')
+# Verify Installation
+os.system(f"python {VERIFICATION_SCRIPT}")
+
+#install tensorflow
+
+os.system("pip install tensorflow==2.4.1 tensorflow-gpu==2.4.1 --upgrade")
+
+os.system("pip uninstall protobuf matplotlib -y")
+os.system("pip install protobuf matplotlib==3.2")
+
+
+import object_detection
+
+if os.name =='posix':
+    os.system(f"wget {PRETRAINED_MODEL_URL}")
+    os.system(f"mv {PRETRAINED_MODEL_NAME+'.tar.gz'} {paths['PRETRAINED_MODEL_PATH']}")
+    os.system(f"cd {paths['PRETRAINED_MODEL_PATH']} && tar -zxvf {PRETRAINED_MODEL_NAME+'.tar.gz'}")
+if os.name == 'nt':
+    wget.download(PRETRAINED_MODEL_URL)
+    os.system(f"move {PRETRAINED_MODEL_NAME+'.tar.gz'} {paths['PRETRAINED_MODEL_PATH']}")
+    os.system(f"cd {paths['PRETRAINED_MODEL_PATH']} && tar -zxvf {PRETRAINED_MODEL_NAME+'.tar.gz'}")
